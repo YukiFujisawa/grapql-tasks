@@ -21,7 +21,7 @@ export class TaskResolver {
    * @returns 作成したタスク
    */
   @Mutation(() => Task)
-  createTask(@Args('createInput') createInput: CreateTaskInput): Task {
-    return this.taskService.createTask(createInput);
+  createTask(@Args('createTaskInput') createTaskInput: CreateTaskInput): Task {
+    return this.taskService.createTask(createTaskInput);
   }
 }
