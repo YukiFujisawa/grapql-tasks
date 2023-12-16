@@ -1,8 +1,11 @@
 // Task model for GraphQL
 
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
-
+import { IsDateString, IsNotEmpty } from 'class-validator';
+/**
+ * データ受け渡し用のクラス
+ * これを使って、GraphQLのリクエストデータを受け取る。
+ */
 @InputType()
 export class CreateTaskInput {
   @Field()
@@ -10,8 +13,9 @@ export class CreateTaskInput {
   name: string;
 
   @Field()
+  @IsDateString()
   dueDate: string;
 
   @Field({ nullable: true })
-  description: string;
+  description?: string;
 }
