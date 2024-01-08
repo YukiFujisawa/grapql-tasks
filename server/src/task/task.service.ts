@@ -1,21 +1,17 @@
 // task用のサービス
 
 import { Injectable } from '@nestjs/common';
-import { Task } from './models/task.model';
-import { CreateTaskInput } from './dto/task.input';
+import { CreateTaskInput } from './dto/createTask.input';
+import { PrismaService } from '../prisma/prisma.service';
+import { Task } from '@prisma/client';
+import { UpdateTaskInput } from './dto/updateTask.input';
 
 @Injectable()
 export class TaskService {
-  tasks: Task[] = [];
+  constructor(private readonly prismaService: PrismaService) {}
 
-  getTasks(): Task[] {
-    const task = new Task();
-    task.id = 1;
-    task.name = 'Task1';
-    task.dueDate = '2021-07-01';
-    task.status = 'NOT_STARTED';
-    this.tasks.push(task);
-    return this.tasks;
+  async getTasks(): Promise<Task[]> {
+    return await this.prismaService.task.findMany();
   }
 
   /**
@@ -23,15 +19,45 @@ export class TaskService {
    * @param task タスク
    * @returns 作成したタスク
    */
-  createTask(createTaskInput: CreateTaskInput): Task {
+  async createTask(createTaskInput: CreateTaskInput): Promise<Task> {
     const { name, dueDate, description } = createTaskInput;
-    const task = new Task();
-    task.id = this.tasks.length + 1;
-    task.name = name;
-    task.dueDate = dueDate;
-    task.description = description;
-    task.status = 'NOT_STARTED';
-    this.tasks.push(task);
+    const task = this.prismaService.task.create({
+      data: {
+        name,
+        dueDate,
+        description,
+      },
+    });
+    return task;
+  }
+
+  /**
+   * タスクを更新する
+   * @param task タスク
+   * @returns 更新したタスク
+   */
+  async updateTask(updateTaskInput: UpdateTaskInput): Promise<Task> {
+    const updatedTask = await this.prismaService.task.update({
+      where: { id: updateTaskInput.id },
+      data: {
+        name: updateTaskInput.name,
+        dueDate: updateTaskInput.dueDate,
+        status: updateTaskInput.status,
+        description: updateTaskInput.description,
+      },
+    });
+    return updatedTask;
+  }
+  /**
+   * タスクを削除する
+   * @param id タスクID
+   * @returns 削除したタスク
+   * @throws タスクが見つからなかった場合
+   */
+  async deleteTask(id: number): Promise<Task> {
+    const task = await this.prismaService.task.delete({
+      where: { id },
+    });
     return task;
   }
 }
