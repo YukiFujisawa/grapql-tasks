@@ -31,10 +31,10 @@ model Task {
   dueDate   String  @db.VarChar(10)
   status    Status  @default(NOT_STARTED)
   description String?
-  userId    Int
-  user      User    @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now()) @db.Timestamp(0)
   updatedAt DateTime @updatedAt @db.Timestamp(0)
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 enum Status {

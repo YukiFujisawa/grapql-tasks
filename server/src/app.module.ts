@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { TaskModule } from './task/task.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { UserModule } from './user/user.module';
 
 // GraphQLでApolloGraphQLの設定を行う
 @Module({
@@ -15,6 +16,7 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     TaskModule,
     PrismaModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
